@@ -49,11 +49,19 @@ const { keys, entries, fromEntries } = Object;
 const renameCompartments = compartments => {
   /** @type {Record<string, string>} */
   const renames = {};
-  let n = 0;
-  for (const [name, compartment] of entries(compartments)) {
+  let prev = '';
+  let index = 0;
+  for (const name of keys(compartments).sort()) {
+    const compartment = compartments[name];
     const { label } = compartment;
-    renames[name] = `${label}-n${n}`;
-    n += 1;
+    if (label === prev) {
+      renames[name] = `${label}@${index}`;
+      index += 1;
+    } else {
+      renames[name] = label;
+      prev = label;
+      index = 0;
+    }
   }
   return renames;
 };
