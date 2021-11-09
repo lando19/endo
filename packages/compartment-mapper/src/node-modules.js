@@ -23,6 +23,7 @@
  * @typedef {Object} Node
  * @property {string} label
  * @property {string} name
+ * @property {string} path
  * @property {boolean} explicit
  * @property {Record<string, string>} exports
  * @property {Record<string, string>} dependencies - from module name to
@@ -268,6 +269,7 @@ const graphPackage = async (
 
   Object.assign(result, {
     name,
+    path: '',
     label: `${name}${version ? `-v${version}` : ''}`,
     explicit: exports !== undefined,
     exports: inferExports(packageDescriptor, tags, types),
@@ -384,6 +386,40 @@ const graphPackages = async (
 };
 
 /**
+ * Compute the lexically shortest path from the entry package to each
+ * transitive dependency package.
+ * The path is a delimited with hashes, so hash is forbidden to dependency
+ * names.
+ * The empty string is a sentinel for a path that has not been computed.
+ *
+ * The shortest path serves as a suitable sort key for generating archives that
+ * are consistent even when the package layout on disk changes, as the package
+ * layout tends to differ between installation with and without devopment-time
+ * dependencies.
+ *
+ * @param {Graph} graph
+ * @param {string} location
+ * @param {string} path
+ */
+const trace = (graph, location, path) => {
+  const node = graph[location];
+  if (node.path !== '' && node.path <= path) {
+    return;
+  }
+  node.path = path;
+  for (const name of keys(node.dependencies)) {
+    if (name.includes('#')) {
+      throw new Error(
+        `Package at ${q(location)} has a dependency named ${q(
+          name,
+        )} containing the octothorpe symbol ("#") which frustrates use of "#" in dependency paths so Endo does not support such dependencies`,
+      );
+    }
+    trace(graph, node.dependencies[name], `${path}#${name}`);
+  }
+};
+
+/**
  * translateGraph converts the graph returned by graph packages (above) into a
  * compartment map.
  *
@@ -413,7 +449,7 @@ const translateGraph = (
   // package and is a complete list of every external module that the
   // corresponding compartment can import.
   for (const packageLocation of keys(graph).sort()) {
-    const { name, label, dependencies, parsers, types } = graph[
+    const { name, path, label, dependencies, parsers, types } = graph[
       packageLocation
     ];
     /** @type {Record<string, ModuleDescriptor>} */
@@ -448,6 +484,7 @@ const translateGraph = (
     }
     compartments[packageLocation] = {
       label,
+      path,
       name,
       location: packageLocation,
       modules,
@@ -495,5 +532,6 @@ export const compartmentMapForNodeModules = async (
     packageDescriptor,
     dev,
   );
+  trace(graph, packageLocation, '#');
   return translateGraph(packageLocation, moduleSpecifier, graph, tags);
 };
