@@ -4,7 +4,6 @@
 /** @typedef {import('ses').ResolveHook} ResolveHook */
 /** @typedef {import('ses').PrecompiledStaticModuleInterface} PrecompiledStaticModuleInterface */
 /** @typedef {import('./types.js').ParseFn} ParseFn */
-/** @typedef {import('./types.js').CompartmentDescriptor} CompartmentDescriptor */
 /** @typedef {import('./types.js').CompartmentSources} CompartmentSources */
 /** @typedef {import('./types.js').ReadFn} ReadFn */
 /** @typedef {import('./types.js').ModuleTransforms} ModuleTransforms */
@@ -35,7 +34,7 @@ const parserForLanguage = {
 };
 
 /**
- * @param {Record<string, CompartmentDescriptor>} compartmentDescriptors
+ * @param {Record<string, import('./types.js').CompartmentDescriptor<{}, {}>>} compartmentDescriptors
  * @param {Record<string, CompartmentSources>} compartmentSources
  * @param {Record<string, ResolveHook>} compartmentResolvers
  * @param {string} entryCompartmentName

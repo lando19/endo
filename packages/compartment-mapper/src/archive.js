@@ -3,8 +3,6 @@
 
 /** @typedef {import('./types.js').ArchiveOptions} ArchiveOptions */
 /** @typedef {import('./types.js').ArchiveWriter} ArchiveWriter */
-/** @typedef {import('./types.js').CompartmentDescriptor} CompartmentDescriptor */
-/** @typedef {import('./types.js').ModuleDescriptor} ModuleDescriptor */
 /** @typedef {import('./types.js').ParseFn} ParseFn */
 /** @typedef {import('./types.js').ReadFn} ReadFn */
 /** @typedef {import('./types.js').ReadPowers} ReadPowers */
@@ -74,7 +72,7 @@ const compare = (a, b) => ((a === b ? 0 : a < b ? -1 : 1));
  * actual installation location, so should be orthogonal to the vagaries of the
  * package manager's deduplication algorithm.
  *
- * @param {Record<string, CompartmentDescriptor>} compartments
+ * @param {Record<string, import('./types.js').CompartmentDescriptor<import('./types.js').CompartmentPathEmbellishment, {}>>} compartments
  * @returns {Record<string, string>} map from old to new compartment names.
  */
 const renameCompartments = compartments => {
@@ -109,7 +107,7 @@ const renameCompartments = compartments => {
 };
 
 /**
- * @param {Record<string, CompartmentDescriptor>} compartments
+ * @param {Record<string, import('./types.js').CompartmentDescriptor<{}, {}>>} compartments
  * @param {Sources} sources
  * @param {Record<string, string>} renames
  */
@@ -120,7 +118,7 @@ const translateCompartmentMap = (compartments, sources, renames) => {
     const { label } = compartment;
 
     // rename module compartments
-    /** @type {Record<string, ModuleDescriptor>} */
+    /** @type {Record<string, import('./types.js').ModuleDescriptor<{}>>} */
     const modules = {};
     const compartmentModules = compartment.modules;
     if (compartment.modules) {

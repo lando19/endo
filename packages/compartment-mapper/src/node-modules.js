@@ -4,10 +4,7 @@
 /** @typedef {import('./types.js').Language} Language */
 /** @typedef {import('./types.js').ReadFn} ReadFn */
 /** @typedef {import('./types.js').CanonicalFn} CanonicalFn */
-/** @typedef {import('./types.js').CompartmentMapDescriptor} CompartmentMapDescriptor */
-/** @typedef {import('./types.js').ModuleDescriptor} ModuleDescriptor */
 /** @typedef {import('./types.js').ScopeDescriptor} ScopeDescriptor */
-/** @typedef {import('./types.js').CompartmentDescriptor} CompartmentDescriptor */
 /** @typedef {import('./types.js').ReadPowers} ReadPowers */
 
 /**
@@ -428,7 +425,7 @@ const trace = (graph, location, path) => {
  * @param {Graph} graph
  * @param {Set<string>} tags - build tags about the target environment
  * for selecting relevant exports, e.g., "browser" or "node".
- * @returns {CompartmentMapDescriptor}
+ * @returns {import('./types.js').CompartmentMapDescriptor<import('./types.js').CompartmentPathEmbellishment, {}>}
  */
 const translateGraph = (
   entryPackageLocation,
@@ -436,7 +433,7 @@ const translateGraph = (
   graph,
   tags,
 ) => {
-  /** @type {Record<string, CompartmentDescriptor>} */
+  /** @type {Record<string, import('./types.js').CompartmentDescriptor<import('./types.js').CompartmentPathEmbellishment, {}>>} */
   const compartments = {};
 
   // For each package, build a map of all the external modules the package can
@@ -452,7 +449,7 @@ const translateGraph = (
     const { name, path, label, dependencies, parsers, types } = graph[
       packageLocation
     ];
-    /** @type {Record<string, ModuleDescriptor>} */
+    /** @type {Record<string, import('./types.js').ModuleDescriptor<{}>>} */
     const modules = {};
     /** @type {Record<string, ScopeDescriptor>} */
     const scopes = {};
@@ -512,7 +509,7 @@ const translateGraph = (
  * @param {string} moduleSpecifier
  * @param {Object} [options]
  * @param {boolean} [options.dev]
- * @returns {Promise<CompartmentMapDescriptor>}
+ * @returns {Promise<import('./types.js').CompartmentMapDescriptor<import('./types.js').CompartmentPathEmbellishment, {}>>}
  */
 export const compartmentMapForNodeModules = async (
   readPowers,

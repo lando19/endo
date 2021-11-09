@@ -4,9 +4,7 @@
 /** @typedef {import('ses').ImportHook} ImportHook */
 /** @typedef {import('./types.js').ParseFn} ParseFn */
 /** @typedef {import('./types.js').ArchiveReader} ArchiveReader */
-/** @typedef {import('./types.js').CompartmentDescriptor} CompartmentDescriptor */
 /** @typedef {import('./types.js').Application} Application */
-/** @typedef {import('./types.js').CompartmentMapDescriptor} CompartmentMapDescriptor */
 /** @typedef {import('./types.js').ExecuteFn} ExecuteFn */
 /** @typedef {import('./types.js').ReadFn} ReadFn */
 /** @typedef {import('./types.js').ReadPowers} ReadPowers */
@@ -43,7 +41,7 @@ const parserForLanguage = {
 
 /**
  * @param {ArchiveReader} archive
- * @param {Record<string, CompartmentDescriptor>} compartments
+ * @param {Record<string, import('./types.js').CompartmentDescriptor<{}, {}>>} compartments
  * @param {string} archiveLocation
  * @param {HashFn} [computeSha512]
  * @returns {ArchiveImportHookMaker}
@@ -142,7 +140,7 @@ export const parseArchive = async (
   }
 
   const compartmentMapText = textDecoder.decode(compartmentMapBytes);
-  const compartmentMap = /** @type {CompartmentMapDescriptor} */ (parseLocatedJson(
+  const compartmentMap = /** @type {import('./types.js').CompartmentMapDescriptor<{}, {}>} */ (parseLocatedJson(
     compartmentMapText,
     'compartment-map.json',
   ));

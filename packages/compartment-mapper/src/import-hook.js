@@ -5,7 +5,6 @@
 /** @typedef {import('./types.js').ReadFn} ReadFn */
 /** @typedef {import('./types.js').HashFn} HashFn */
 /** @typedef {import('./types.js').Sources} Sources */
-/** @typedef {import('./types.js').CompartmentDescriptor} CompartmentDescriptor */
 /** @typedef {import('./types.js').ImportHookMaker} ImportHookMaker */
 
 import { parseExtension } from './extension.js';
@@ -41,7 +40,7 @@ const resolveLocation = (rel, abs) => new URL(rel, abs).toString();
  * @param {ReadFn} read
  * @param {string} baseLocation
  * @param {Sources} sources
- * @param {Record<string, CompartmentDescriptor>} compartments
+ * @param {Record<string, import('./types.js').CompartmentDescriptor<{}, {}>>} compartments
  * @param {Record<string, never>} exitModules
  * @param {HashFn=} computeSha512
  * @returns {ImportHookMaker}

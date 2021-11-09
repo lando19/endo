@@ -5,8 +5,6 @@
 /** @typedef {import('./types.js').ParseFn} ParseFn */
 /** @typedef {import('./types.js').ModuleTransforms} ModuleTransforms */
 /** @typedef {import('./types.js').Language} Language */
-/** @typedef {import('./types.js').ModuleDescriptor} ModuleDescriptor */
-/** @typedef {import('./types.js').CompartmentMapDescriptor} CompartmentMapDescriptor */
 /** @typedef {import('./types.js').LinkOptions} LinkOptions */
 
 import { resolve } from './node-module-specifier.js';
@@ -175,8 +173,8 @@ const trimModuleSpecifierPrefix = (moduleSpecifier, prefix) => {
  *
  * @param {Record<string, Compartment>} compartments
  * @param {string} compartmentName
- * @param {Record<string, ModuleDescriptor>} moduleDescriptors
- * @param {Record<string, ModuleDescriptor>} scopeDescriptors
+ * @param {Record<string, import('./types.js').ModuleDescriptor<{}>>} moduleDescriptors
+ * @param {Record<string, import('./types.js').ModuleDescriptor<{}>>} scopeDescriptors
  * @param {Record<string, string>} exitModules
  * @param {boolean} archiveOnly
  * @returns {ModuleMapHook | undefined}
@@ -307,7 +305,7 @@ const makeModuleMapHook = (
  * Passes the given globals and external modules into the root compartment
  * only.
  *
- * @param {CompartmentMapDescriptor} compartmentMap
+ * @param {import('./types.js').CompartmentMapDescriptor<{}, {}>} compartmentMap
  * @param {LinkOptions} options
  */
 export const link = (
@@ -398,7 +396,7 @@ export const link = (
 };
 
 /**
- * @param {CompartmentMapDescriptor} compartmentMap
+ * @param {import('./types.js').CompartmentMapDescriptor<{}, {}>} compartmentMap
  * @param {LinkOptions} options
  */
 export const assemble = (compartmentMap, options) =>

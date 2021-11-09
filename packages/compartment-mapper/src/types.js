@@ -16,10 +16,12 @@ export const moduleJSDocTypes = true;
  * A compartment map describes how to construct an application as a graph of
  * Compartments, each corresponding to Node.js style packaged modules.
  *
+ * @template CompartmentEmbellishment={}
+ * @template ModuleEmbellishment={}
  * @typedef {Object} CompartmentMapDescriptor
  * @property {Array<string>} tags
  * @property {EntryDescriptor} entry
- * @property {Record<string, CompartmentDescriptor>} compartments
+ * @property {Record<string, CompartmentDescriptor<CompartmentEmbellishment, ModuleEmbellishment>>} compartments
  */
 
 /**
@@ -32,34 +34,50 @@ export const moduleJSDocTypes = true;
  */
 
 /**
- * A compartment descriptor corresponds to a single Compartment
- * of an assembled Application and describes how to construct
- * one for a given library or application package.json.
- *
- * @typedef {Object} CompartmentDescriptor
+ * @template {{}} ModuleEmbellishment
+ * @typedef {Object} PlainCompartmentDescriptor
  * @property {string} label
- * @property {string} path - shortest path of dependency names to this compartment
  * @property {string} name - the name of the originating package suitable for
  * constructing a sourceURL prefix that will match it to files in a developer
  * workspace.
  * @property {string} location
- * @property {Record<string, ModuleDescriptor>} modules
+ * @property {Record<string, ModuleDescriptor<ModuleEmbellishment>>} modules
  * @property {Record<string, ScopeDescriptor>} scopes
  * @property {Record<string, Language>} parsers - language for extension
  * @property {Record<string, Language>} types - language for module specifier
  */
 
 /**
+ * A compartment descriptor corresponds to a single Compartment
+ * of an assembled Application and describes how to construct
+ * one for a given library or application package.json.
+ *
+ * @template {{}} CompartmentEmbellishment
+ * @template {{}} ModuleEmbellishment
+ * @typedef {PlainCompartmentDescriptor<ModuleEmbellishment> & CompartmentEmbellishment} CompartmentDescriptor
+ */
+
+/**
+ * @typedef {Object} CompartmentPathEmbellishment
+ * @property {string} path - shortest path of dependency names to this compartment
+ */
+
+/**
  * For every module explicitly mentioned in an `exports` field of a
  * package.json, there is a corresponding module descriptor.
  *
- * @typedef {Object} ModuleDescriptor
+ * @typedef {Object} PlainModuleDescriptor
  * @property {string=} [compartment]
  * @property {string} [module]
  * @property {string} [location]
  * @property {Language} [parser]
  * @property {string} [sha512] in base 16, hex
  * @property {string} [exit]
+ */
+
+/**
+ * @template {{}} ModuleEmbellishment
+ * @typedef {PlainModuleDescriptor & ModuleEmbellishment} ModuleDescriptor
  */
 
 /**
