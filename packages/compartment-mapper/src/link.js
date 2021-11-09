@@ -1,4 +1,5 @@
 // @ts-check
+/// <reference types="ses"/>
 
 /** @typedef {import('ses').ModuleMapHook} ModuleMapHook */
 /** @typedef {import('ses').ResolveHook} ResolveHook */
@@ -37,6 +38,7 @@ const inertModuleNamespace = new Compartment(
   },
 ).module('');
 
+/** @type {typeof Compartment} */
 const defaultCompartment = Compartment;
 
 // q, as in quote, for strings in error messages.

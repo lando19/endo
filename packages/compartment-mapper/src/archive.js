@@ -11,7 +11,6 @@
 /** @typedef {import('./types.js').WriteFn} WriteFn */
 
 import { writeZip } from '@endo/zip';
-import { resolve } from './node-module-specifier.js';
 import { compartmentMapForNodeModules } from './node-modules.js';
 import { search } from './search.js';
 import { link } from './link.js';
@@ -249,7 +248,6 @@ const digestLocation = async (powers, moduleLocation, options) => {
 
   // Induce importHook to record all the necessary modules to import the given module specifier.
   const { compartment } = link(compartmentMap, {
-    resolve,
     modules: exitModules,
     makeImportHook,
     moduleTransforms,

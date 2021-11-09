@@ -192,7 +192,6 @@ export const moduleJSDocTypes = true;
  * @param {string} packageLocation
  * @param {string} packageName
  * @param {ParseFn} parse
- * @param {Record<string, Object>} exitModules
  * @returns {ImportHook}
  */
 
@@ -222,7 +221,7 @@ export const moduleJSDocTypes = true;
  * @property {Array<Transform>} [transforms]
  * @property {Array<Transform>} [__shimTransforms__]
  * @property {Record<string, Object>} [modules]
- * @property {typeof Compartment.prototype.constructor} [Compartment]
+ * @property {typeof Compartment} [Compartment]
  */
 
 /**
@@ -230,11 +229,15 @@ export const moduleJSDocTypes = true;
  */
 
 /**
- * @typedef {ExecuteOptions & Object} LinkOptions
- * @property {AssembleImportHook} makeImportHook
+ * @typedef AdditionalLinkOptions
+ * @property {ImportHookMaker} makeImportHook
  * @property {ParserForLanguage} parserForLanguage
  * @property {ModuleTransforms} [moduleTransforms]
  * @property {boolean} [archiveOnly]
+ */
+
+/**
+ * @typedef {ExecuteOptions & AdditionalLinkOptions} LinkOptions
  */
 
 /**

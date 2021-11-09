@@ -11,7 +11,6 @@
 /** @typedef {import('./types.js').WriteFn} WriteFn */
 /** @typedef {import('./types.js').ArchiveOptions} ArchiveOptions */
 
-import { resolve } from './node-module-specifier.js';
 import { compartmentMapForNodeModules } from './node-modules.js';
 import { search } from './search.js';
 import { link } from './link.js';
@@ -164,7 +163,6 @@ export const makeBundle = async (read, moduleLocation, options) => {
 
   // Induce importHook to record all the necessary modules to import the given module specifier.
   const { compartment, resolvers } = link(compartmentMap, {
-    resolve,
     makeImportHook,
     moduleTransforms,
     parserForLanguage,
