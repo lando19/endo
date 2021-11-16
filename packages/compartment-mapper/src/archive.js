@@ -74,7 +74,7 @@ const compare = (a, b) => ((a === b ? 0 : a < b ? -1 : 1));
  * @param {Record<string, import('./types.js').CompartmentDescriptor<import('./types.js').CompartmentPathEmbellishment, {}>>} compartments
  * @returns {Record<string, string>} map from old to new compartment names.
  */
-const renameCompartments = compartments => {
+export const renameCompartments = compartments => {
   /** @type {Record<string, string>} */
   const renames = {};
   let index = 0;
@@ -110,7 +110,7 @@ const renameCompartments = compartments => {
  * @param {Sources} sources
  * @param {Record<string, string>} renames
  */
-const translateCompartmentMap = (compartments, sources, renames) => {
+export const translateCompartments = (compartments, sources, renames) => {
   const result = {};
   for (const name of keys(renames)) {
     const compartment = compartments[name];
@@ -144,6 +144,7 @@ const translateCompartmentMap = (compartments, sources, renames) => {
           parser,
           exit,
           sha512,
+          used: true,
         };
       }
     }
@@ -161,11 +162,27 @@ const translateCompartmentMap = (compartments, sources, renames) => {
 };
 
 /**
+ * @param {import('./types.js').CompartmentMapDescriptor<{}, {}>} compartmentMap
+ * @param {Sources} sources
+ * @param {Record<string, string>} renames
+ */
+export const translateCompartmentMap = (compartmentMap, sources, renames) => {
+  return {
+    ...compartmentMap,
+    entry: {
+      compartment: renames[compartmentMap.entry.compartment],
+      module: compartmentMap.entry.module,
+    },
+    compartments: translateCompartments(compartmentMap.compartments, sources, renames),
+  };
+};
+
+/**
  * @param {Sources} sources
  * @param {Record<string, string>} renames
  * @returns {Sources}
  */
-const renameSources = (sources, renames) => {
+export const renameSources = (sources, renames) => {
   return fromEntries(
     entries(sources).map(([name, compartmentSources]) => [
       renames[name],
@@ -257,7 +274,7 @@ const digestLocation = async (powers, moduleLocation, options) => {
   await compartment.load(entryModuleSpecifier);
 
   const renames = renameCompartments(compartments);
-  const archiveCompartments = translateCompartmentMap(
+  const archiveCompartments = translateCompartments(
     compartments,
     sources,
     renames,

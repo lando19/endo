@@ -7,15 +7,17 @@
 /**
  * @param {typeof import('fs')} fs
  * @param {typeof import('crypto')} [crypto]
+ * @param {typeof import('url')} [url]
  * @returns {ReadPowers}
  */
-export const makeNodeReadPowers = (fs, crypto = undefined) => {
+export const makeNodeReadPowers = (fs, crypto = undefined, url = undefined) => {
   /**
    * @param {string} location
    */
   const read = async location => {
     try {
-      return await fs.promises.readFile(new URL(location).pathname);
+      const pathname = url ? url.fileURLToPath(location) : new URL(location).pathname;
+      return await fs.promises.readFile(pathname);
     } catch (error) {
       throw new Error(error.message);
     }
@@ -66,16 +68,18 @@ export const makeNodeReadPowers = (fs, crypto = undefined) => {
 
 /**
  * @param {typeof import('fs')} fs
+ * @param {typeof import('url')} [url]
  * @returns {WritePowers}
  */
-export const makeNodeWritePowers = fs => {
+export const makeNodeWritePowers = (fs, url = undefined) => {
   /**
    * @param {string} location
    * @param {Uint8Array} data
    */
   const write = async (location, data) => {
     try {
-      return await fs.promises.writeFile(new URL(location).pathname, data);
+      const pathname = url ? url.fileURLToPath(location) : new URL(location).pathname;
+      return await fs.promises.writeFile(pathname, data);
     } catch (error) {
       throw new Error(error.message);
     }

@@ -202,6 +202,7 @@ const makeModuleMapHook = (
         exit,
       } = moduleDescriptor;
       if (exit !== undefined) {
+        moduleDescriptor.used = true;
         // TODO Currenly, every package can connect to built-in modules.
         // Policies should be able to allow third-party modules to exit to
         // built-ins explicitly, or have built-ins subverted by modules from
@@ -221,6 +222,7 @@ const makeModuleMapHook = (
         }
       }
       if (foreignModuleSpecifier !== undefined) {
+        moduleDescriptor.used = true;
         const foreignCompartment = compartments[foreignCompartmentName];
         if (foreignCompartment === undefined) {
           throw new Error(
@@ -282,6 +284,7 @@ const makeModuleMapHook = (
         moduleDescriptors[moduleSpecifier] = {
           compartment: foreignCompartmentName,
           module: foreignModuleSpecifier,
+          used: true,
         };
         return foreignCompartment.module(foreignModuleSpecifier);
       }

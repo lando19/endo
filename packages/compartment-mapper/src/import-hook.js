@@ -60,7 +60,12 @@ export const makeImportHookMaker = (
     packageLocation = resolveLocation(packageLocation, baseLocation);
     const packageSources = sources[packageLocation] || {};
     sources[packageLocation] = packageSources;
-    const { modules = {} } = compartments[packageLocation] || {};
+    const compartment = compartments[packageLocation] || {};
+    // Memoize back if defaulted
+    compartments[packageLocation] = compartment;
+    const { modules = {} } = compartment;
+    // Memoize back if defaulted
+    compartments[packageLocation].modules = modules;
 
     /** @type {ImportHook} */
     const importHook = async moduleSpecifier => {
@@ -71,6 +76,10 @@ export const makeImportHookMaker = (
       // The `moduleMapHook` captures all third-party dependencies.
       if (moduleSpecifier !== '.' && !moduleSpecifier.startsWith('./')) {
         if (has(exitModules, moduleSpecifier)) {
+          modules[moduleSpecifier] = {
+            exit: moduleSpecifier,
+            used: true,
+          };
           packageSources[moduleSpecifier] = {
             exit: moduleSpecifier,
           };
@@ -136,12 +145,18 @@ export const makeImportHookMaker = (
             modules[moduleSpecifier] = {
               module: candidateSpecifier,
               compartment: packageLocation,
+              used: true,
             };
             record = {
               record: concreteRecord,
               specifier: candidateSpecifier,
             };
           } else {
+            modules[moduleSpecifier] = {
+              location: moduleLocation,
+              parser,
+              used: true,
+            };
             record = concreteRecord;
           }
 
